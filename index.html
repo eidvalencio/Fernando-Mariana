@@ -1,389 +1,877 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeRunners - Café da Manhã - 01/03</title>
-    <!-- Tailwind CSS para estilização moderna -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Adega da Teresinha | Premium</title>
+
+    <!-- Ícones para a tela de início e navegador -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://placehold.co/180x180/881337/f5f5f4?text=A&font=playfairdisplay">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://placehold.co/32x32/881337/f5f5f4?text=A&font=playfairdisplay">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://placehold.co/16x16/881337/f5f5f4?text=A&font=playfairdisplay">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
+        html, body {
+            height: 100%;
+            scroll-behavior: smooth;
+            /* Evita pull-to-refresh indesejado no mobile */
+            overscroll-behavior-y: none; 
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: #f5f5f4; 
+            background-color: #0c0a09; /* stone-950 */
+        }
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        /* Fundo de Adega Imersivo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1598494834123-a256900bde35?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.20);
+            z-index: -1;
+        }
+
+        /* Efeito Glassmorphism Premium */
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(28, 25, 23, 0.75) 0%, rgba(12, 10, 9, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8);
         }
         
         .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(145deg, rgba(41, 37, 36, 0.65) 0%, rgba(28, 25, 23, 0.85) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:active {
+            transform: scale(0.97);
+            border-color: rgba(159, 18, 57, 0.5);
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Animações Suaves */
+        .modal-scale-enter-active { transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-scale-leave-active { transition: all 200ms ease-in; }
+        .modal-scale-enter-from, .modal-scale-leave-to { transform: scale(0.95) translateY(15px); opacity: 0; }
+        .modal-scale-enter-to, .modal-scale-leave-from { transform: scale(1) translateY(0); opacity: 1; }
 
-        /* Animação de Loading Moderno */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #ea580c;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* Scrollbar Invisível/Elegante */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(159, 18, 57, 0.3); border-radius: 10px; }
+        
+        input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+
+        /* Monitor API */
+        .monitor-wrapper { transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .monitor-wrapper:not(.is-expanded) { width: 40px; }
+        .monitor-wrapper.is-expanded { width: 200px; }
+        .expanded-view { transition: opacity 0.2s ease-in-out 0.1s; }
+        .monitor-wrapper:not(.is-expanded) .expanded-view { opacity: 0; max-height: 0; visibility: hidden; }
+        #api-monitor.is-expanded .expanded-view { opacity: 1; max-height: 500px; visibility: visible; }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body class="antialiased selection:bg-red-900 selection:text-white pb-24">
 
-    <main class="w-full max-w-md mt-4 mb-2 flex flex-col min-h-[90vh]">
+    <div id="app" class="px-3 py-5 mx-auto max-w-lg md:max-w-3xl flex flex-col min-h-screen">
         
-        <!-- Cartão Principal -->
-        <div class="glass-card rounded-3xl overflow-hidden fade-in flex-grow relative flex flex-col">
-            
-            <!-- Indicador de Estado da Nuvem -->
-            <div id="cloudStatus" class="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-bold border border-white/30 transition-all">
-                <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" id="statusPing"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500" id="statusDot"></span>
-                </span>
-                <span id="statusText">A Ligar...</span>
+        <!-- Header Premium Compacto Mobile -->
+        <header class="text-center mt-2 mb-6 flex-shrink-0 relative">
+            <h1 class="font-serif text-4xl md:text-5xl text-white tracking-tight font-bold drop-shadow-[0_2px_10px_rgba(159,18,57,0.8)]">
+                Adega da Teresinha
+            </h1>
+            <div class="mx-auto mt-2 w-16 h-0.5 bg-red-800 rounded-full opacity-80"></div>
+        </header>
+
+        <!-- Controle Superior: Cards lado a lado no topo -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <!-- Contador com Garrafas e Rótulos Clarificados -->
+            <div id="wine-counter-panel" class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center border-t border-t-white/10 relative overflow-hidden">
+                <span class="text-stone-400 text-[10px] uppercase tracking-widest font-semibold mb-1">Total Garrafas</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🍷</span>
+                    <span id="total-wine-count" class="font-serif text-4xl text-red-400 font-bold leading-none">0</span>
+                </div>
+                <span class="text-stone-500 text-[9px] uppercase tracking-widest mt-1"><span id="unique-labels-count">0</span> Rótulos Únicos</span>
             </div>
 
-            <!-- Cabeçalho Visual -->
-            <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-center relative overflow-hidden pt-10">
-                <svg class="absolute -right-4 -top-4 w-24 h-24 text-white opacity-10" fill="currentColor" viewBox="0 0 24 24"><path d="M13.4 2.096a10.08 10.08 0 0 0-8.937 3.331A10.054 10.054 0 0 0 2.096 13.4c.53 3.894 3.458 7.207 7.285 8.246a9.982 9.982 0 0 0 2.618.354l.142-.001a3.001 3.001 0 0 0 2.516-1.426 2.989 2.989 0 0 0 .153-2.879l-.199-.416a1.919 1.919 0 0 1 .094-1.912 2.004 2.004 0 0 1 2.576-.755l.412.197c.412.198.85.299 1.301.299A3.022 3.022 0 0 0 22 12.14a9.935 9.935 0 0 0-.353-2.618c-1.04-3.827-4.353-6.755-8.247-7.426z"/></svg>
-                
-                <div class="relative z-10">
-                    <h1 class="text-3xl font-extrabold text-white tracking-tight drop-shadow-md">LeRunners</h1>
-                    <p class="text-orange-100 font-medium mt-1 text-sm uppercase tracking-wider">Lista do Pequeno-Almoço ☕</p>
-                </div>
-            </div>
-
-            <!-- Área da Lista da Base de Dados (Realtime) -->
-            <div class="p-6 bg-orange-50/50 border-b border-orange-100 flex-grow min-h-[200px]">
-                <h2 class="text-sm font-bold text-orange-800 mb-3 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    Salvos na Nuvem (Tempo Real):
-                </h2>
-                
-                <ul id="listaConfirmados" class="space-y-2 text-sm text-gray-700">
-                    <li class="flex justify-center py-4"><div class="loader"></div></li>
-                </ul>
-            </div>
-
-            <!-- Formulário de Adição (Apenas Guarda) -->
-            <div class="p-6 bg-white space-y-4">
-                <div class="relative flex items-center py-1">
-                    <div class="flex-grow border-t border-gray-200"></div>
-                    <span class="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase font-bold tracking-wider text-center">Adicionar à Lista</span>
-                    <div class="flex-grow border-t border-gray-200"></div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="flex-1">
-                        <label for="userName" class="block text-sm font-bold text-gray-700 mb-1">Seu Nome</label>
-                        <input type="text" id="userName" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white outline-none transition-all text-sm text-gray-800 font-medium" placeholder="Ex: Enzo">
-                    </div>
-                    <div class="flex-1">
-                        <label for="item" class="block text-sm font-bold text-gray-700 mb-1">O que vai levar?</label>
-                        <input type="text" id="item" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white outline-none transition-all text-sm text-gray-800 font-medium" placeholder="Ex: Sumo, Pão...">
-                    </div>
-                </div>
-
-                <!-- Botão 1: Apenas Guarda na Base de Dados -->
-                <button id="btnAdd" onclick="addToList()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 active:transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Gravar na Lista
+            <!-- Botões Sommelier IA (Compactos) -->
+            <div class="glass-panel p-3 rounded-2xl flex flex-col justify-center gap-2 border-t border-t-white/10">
+                <button id="btn-surprise-me" class="flex-1 bg-gradient-to-r from-purple-900/50 to-purple-800/30 border border-purple-500/20 text-white text-[11px] font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md">
+                    <span>✨</span> Escolha Ideal
                 </button>
-            </div>
-
-            <!-- Área de Partilha (Apenas Envia) -->
-            <div class="p-6 bg-gray-50 border-t border-gray-100 rounded-b-3xl">
-                <!-- Botão 2: Apenas Envia para o WhatsApp -->
-                <button onclick="shareToWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-4 rounded-xl transition-all duration-200 shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 active:transform active:scale-95">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                    </svg>
-                    Enviar Lista para o WhatsApp
+                <button id="btn-dinner-planner" class="flex-1 bg-gradient-to-r from-indigo-900/50 to-blue-900/30 border border-indigo-500/20 text-white text-[11px] font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md">
+                    <span>🍽️</span> Harmonizar
                 </button>
-                <p class="text-xs text-center text-gray-400 mt-2">Adicione ou elimine itens primeiro e depois clique aqui para enviar o link limpo ao grupo.</p>
             </div>
         </div>
-        
-        <!-- Alerta de Erro Dinâmico -->
-        <div id="errorMsg" class="hidden mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md text-sm font-medium w-full text-center z-50"></div>
 
-        <!-- Rodapé da Empresa -->
-        <footer class="mt-8 mb-4 text-center">
-            <p class="text-orange-200 text-sm font-medium opacity-90">
-                Desenvolvido por <span class="font-bold text-white tracking-wide">Thiaguinho soluções</span>
-            </p>
+        <!-- Área Principal -->
+        <main class="glass-panel p-4 rounded-3xl shadow-2xl flex-grow flex flex-col border-t border-t-white/10 relative">
+            
+            <!-- Barra de Pesquisa Refinada Mobile -->
+            <div class="mb-5 relative w-full group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-4 w-4 text-stone-500 group-focus-within:text-red-400 transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="search" id="search-input" class="w-full bg-stone-950/60 border border-stone-800 text-white text-sm rounded-2xl focus:ring-1 focus:ring-red-800 focus:border-red-800 block pl-10 pr-4 py-3 transition-all outline-none placeholder-stone-600" placeholder="Buscar rótulo, uva, localização...">
+            </div>
+
+            <!-- Grade Dinâmica de Vinhos: 2 COLUNAS NO MOBILE -->
+            <div id="wine-list" class="grid grid-cols-2 gap-3 content-start flex-grow pb-10">
+                <!-- Renderizado via JS -->
+            </div>
+            
+            <!-- Estado Vazio -->
+            <div id="empty-message" class="hidden flex-col items-center justify-center flex-grow py-10 text-stone-500 text-center">
+                <div class="w-16 h-16 mb-4 rounded-full bg-stone-900/50 border border-stone-800 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                </div>
+                <h3 class="text-base font-serif text-stone-300 mb-1">Sua adega está vazia.</h3>
+                <p class="text-[11px] px-4">Utilize o botão (+) para escanear um rótulo.</p>
+            </div>
+        </main>
+
+        <!-- Rodapé Discreto e Elegante -->
+        <footer class="text-center mt-6 flex-shrink-0 opacity-60">
+            <p class="font-serif text-[11px] text-stone-400 tracking-[0.15em] uppercase">Thiago Ventura Valencio</p>
+            <p class="text-[8px] text-stone-600 tracking-[0.2em] mt-1">Projeto & Desenvolvimento</p>
         </footer>
-    </main>
+    </div>
 
-    <!-- MOTOR DA BASE DE DADOS (Firebase Realtime Database Modular) -->
+    <!-- Elementos Flutuantes Inferiores (Z-index alto para ficar sobre os modais em background) -->
+    
+    <!-- Monitor de API - Esquerda -->
+    <div class="fixed bottom-6 left-4 z-40">
+        <div id="api-monitor" class="monitor-wrapper bg-stone-950/90 backdrop-blur-xl border border-stone-800 shadow-xl rounded-full flex items-center justify-center h-10 cursor-pointer">
+            <div class="minimized-view flex items-center justify-center w-full h-full">
+                <div id="minimized-status-light" class="w-2.5 h-2.5 rounded-full bg-green-500 transition-colors duration-500 flex items-center justify-center shadow-[0_0_10px_rgba(34,197,94,0.6)]"></div>
+            </div>
+            <div class="expanded-view opacity-0 p-3 text-[10px] w-48">
+                <h3 class="font-bold text-stone-500 text-center border-b border-stone-800 pb-1 mb-2 uppercase tracking-widest text-[8px]">Motor IA</h3>
+                <div id="api-key-list" class="space-y-1.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação - Direita -->
+    <div class="fixed bottom-6 right-4 z-40 flex flex-col gap-3 items-center">
+        <!-- Chat Sommelier -->
+        <button id="ask-sommelier-btn" title="Falar com Sommelier" class="bg-stone-800 border border-stone-700 text-stone-300 w-11 h-11 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        </button>
+        <!-- Adicionar Vinho (FAB Principal) -->
+        <button id="add-wine-action-btn" title="Adicionar Vinho" class="bg-gradient-to-b from-red-600 to-red-800 border border-red-500/50 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(153,27,27,0.6)] active:scale-95 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        </button>
+        
+        <!-- Inputs file ocultos -->
+        <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+        <input type="file" id="gallery-input" accept="image/*" class="hidden">
+    </div>
+
+    <!-- Sistema de Modais Otimizado Mobile -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden modal-scale-enter-from transition-all duration-300"></div>
+    <div id="modal-container" class="fixed inset-0 flex items-end sm:items-center justify-center p-2 sm:p-4 z-[60] hidden">
+        <!-- O modal cola no bottom em telas muito pequenas, ou centraliza em maiores -->
+        <div id="modal-content" class="bg-stone-950 border border-stone-800/80 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative modal-scale-enter-from custom-scrollbar flex flex-col">
+            <!-- Conteúdo injetado via JS terá header fixo -->
+        </div>
+    </div>
+    
+    <!-- Modal de Carregamento Fino -->
+    <div id="loading-modal" class="fixed inset-0 bg-stone-950/95 backdrop-blur-xl flex flex-col items-center justify-center z-[100] hidden">
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 border-2 border-stone-800 rounded-full"></div>
+            <div class="absolute inset-0 border-2 border-t-red-600 rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-2xl opacity-90">🍷</div>
+        </div>
+        <p id="loading-text" class="text-stone-400 mt-6 text-sm font-serif tracking-widest animate-pulse">Processando...</p>
+    </div>
+
+    <!-- LÓGICA CORE, FIREBASE & IA -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // Importações específicas do Realtime Database em vez do Firestore
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ==========================================
-        // CONFIGURAÇÃO DA SUA BASE DE DADOS FIREBASE
-        // ==========================================
+        // ===================================================================================
+        // 1. CONFIGURAÇÃO FIREBASE
+        // ===================================================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyC3EVOgmqKHHzTncjeHhhm1_ugdPEV1u2s",
-            authDomain: "cafe-ba7b6.firebaseapp.com",
-            projectId: "cafe-ba7b6",
-            storageBucket: "cafe-ba7b6.firebasestorage.app",
-            messagingSenderId: "541434175333",
-            appId: "1:541434175333:web:6abbc9adb95637ecf0cb8c",
-            // URL OBRIGATÓRIO PARA O REALTIME DATABASE
-            databaseURL: "https://cafe-ba7b6-default-rtdb.firebaseio.com" 
+          apiKey: "AIzaSyCvYgj-gNRFrUpX3chMl8cfTGzYkx0t6eY",
+          authDomain: "adega-ffb48.firebaseapp.com",
+          projectId: "adega-ffb48",
+          storageBucket: "adega-ffb48.appspot.com",
+          messagingSenderId: "408321300679",
+          appId: "1:408321300679:web:d5f48a9ffa78f7e92946e2"
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        
-        // Caminho do nó principal no Realtime Database
-        const dbPath = 'lerunners_lista';
-        const listaRef = ref(db, dbPath);
-        
-        let currentList = [];
-        let isFirstLoad = true;
+        const db = getFirestore(app);
+        const adegaDocRef = doc(db, "adegas", "adega-compartilhada");
 
-        // Atualização Visual de Estado
-        function updateStatus(status) {
-            const dot = document.getElementById('statusDot');
-            const ping = document.getElementById('statusPing');
-            const text = document.getElementById('statusText');
-            
-            if (status === 'connected') {
-                dot.className = 'relative inline-flex rounded-full h-3 w-3 bg-green-500';
-                ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75';
-                ping.classList.remove('hidden');
-                text.textContent = 'Sincronizado';
-            } else if (status === 'error') {
-                dot.className = 'relative inline-flex rounded-full h-3 w-3 bg-red-500';
-                ping.classList.add('hidden');
-                text.textContent = 'Erro de Ligação';
+        // ===================================================================================
+        // 2. MÓDULO GEMINI API (MODELO 2.5 FLASH)
+        // ===================================================================================
+        class ApiCarousel {
+            constructor(keys, monitorElement) {
+                this.keys = keys;
+                this.currentIndex = 0;
+                this.monitor = monitorElement;
+                this.keyMonitors = [];
+                this.minimizedLight = document.getElementById('minimized-status-light');
+
+                const apiKeyList = this.monitor.querySelector('#api-key-list');
+                apiKeyList.innerHTML = '';
+                this.keys.forEach((key, index) => {
+                    const monitorElement = document.createElement('div');
+                    monitorElement.className = 'flex items-center justify-between';
+                    monitorElement.innerHTML = `
+                        <span class="font-mono text-stone-500 font-medium">Chave ${index + 1}</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="status-text font-bold text-[8px] uppercase tracking-widest"></span>
+                            <div class="status-light w-1.5 h-1.5 rounded-full"></div>
+                        </div>
+                    `;
+                    apiKeyList.appendChild(monitorElement);
+                    this.keyMonitors.push(monitorElement);
+                });
+                this.updateMonitorDisplay('idle');
             }
-        }
 
-        function showError(msg, timeout = 7000) {
-            const errorMsg = document.getElementById('errorMsg');
-            errorMsg.innerHTML = msg; 
-            errorMsg.classList.remove('hidden');
-            setTimeout(() => errorMsg.classList.add('hidden'), timeout);
-        }
+            updateMonitorDisplay(status) {
+                this.keyMonitors.forEach((monitor, index) => {
+                    const text = monitor.querySelector('.status-text');
+                    const light = monitor.querySelector('.status-light');
 
-        // ==========================================
-        // LÓGICA DE AUTENTICAÇÃO E TEMPO REAL
-        // ==========================================
-        
-        const initAuth = async () => {
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Erro Técnico de Autenticação:", error.code, error.message);
-                updateStatus('error');
-                
-                if (error.code === 'auth/admin-restricted-operation' || error.code === 'auth/operation-not-allowed') {
-                    showError("<b>ERRO CRÍTICO:</b> Autenticação Anónima Desligada!<br><br>Vá ao Firebase > Authentication > Sign-in method > Ative o 'Anonymous'.", 15000);
+                    light.className = 'status-light w-1.5 h-1.5 rounded-full';
+
+                    if (index === this.currentIndex) {
+                        if (status === 'processing') {
+                            text.textContent = 'USANDO';
+                            text.className = 'status-text font-bold text-[8px] uppercase tracking-widest text-amber-400';
+                            light.classList.add('bg-amber-400', 'animate-pulse');
+                        } else {
+                            text.textContent = 'PRONTA';
+                            text.className = 'status-text font-bold text-[8px] uppercase tracking-widest text-green-500';
+                            light.classList.add('bg-green-500');
+                        }
+                    } else {
+                        text.textContent = 'ESPERA';
+                        text.className = 'status-text font-bold text-[8px] uppercase tracking-widest text-stone-600';
+                        light.classList.add('bg-stone-700');
+                    }
+                });
+
+                this.minimizedLight.className = 'w-2 h-2 rounded-full transition-colors duration-300 flex items-center justify-center';
+                if (status === 'processing') {
+                    this.minimizedLight.classList.add('bg-amber-400', 'animate-pulse');
                 } else {
-                    showError("Falha na autenticação: " + error.message);
+                    this.minimizedLight.classList.add('bg-green-500');
                 }
             }
-        };
-        initAuth();
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) return; 
+            async makeRequest(payload) {
+                const maxRetries = this.keys.length;
+                for (let attempt = 0; attempt < maxRetries; attempt++) {
+                    this.updateMonitorDisplay('processing');
+                    const currentKey = this.keys[this.currentIndex];
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${currentKey}`;
 
-            // Ativa o Listener do Realtime Database (Substitui o onSnapshot do Firestore)
-            onValue(listaRef, (snapshot) => {
-                currentList = [];
-                
-                if (snapshot.exists()) {
-                    snapshot.forEach((childSnapshot) => {
-                        currentList.push({
-                            id: childSnapshot.key, // Guarda a chave única gerada pelo push()
-                            ...childSnapshot.val()
-                        });
-                    });
-                }
-                
-                // Ordenação cronológica baseada no timestamp
-                currentList.sort((a, b) => a.timestamp - b.timestamp);
-                
-                // SEMENTE INTELIGENTE: Restaura o Leandro se a base estiver totalmente vazia e for o primeiro acesso
-                if (!snapshot.exists() && isFirstLoad) {
-                    const hasSeeded = localStorage.getItem('leandro_seeded_rtdb');
-                    if (!hasSeeded) {
-                        localStorage.setItem('leandro_seeded_rtdb', 'true');
-                        // Inserção inicial no Realtime Database
-                        push(listaRef, {
-                            nome: "Leandro",
-                            item: "Café 🍵, Água, Banana, Melão, Pão de forma",
-                            timestamp: Date.now()
-                        }).catch(e => console.error("Erro ao injetar semente inicial:", e));
-                        return; // O listener será acionado novamente pelo push
+                    try {
+                        const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        this.updateMonitorDisplay('idle');
+                        return await response.json();
+                    } catch (error) {
+                        console.error(`Erro API:`, error);
                     }
                 }
-                
-                isFirstLoad = false;
-                renderList();
-                updateStatus('connected');
-                
-            }, (error) => {
-                console.error("Erro do Realtime Database:", error);
-                updateStatus('error');
-                document.getElementById('listaConfirmados').innerHTML = '<li class="text-center text-red-500 font-bold py-4">Acesso Bloqueado.</li>';
-                showError("<b>ERRO DE SEGURANÇA:</b> Base de Dados Bloqueada!<br><br>Vá ao Firebase > Realtime Database > Rules e coloque .read e .write como true.", 15000);
-            });
+                this.updateMonitorDisplay('idle');
+                throw new Error("Falha de conexão com a IA.");
+            }
+        }
+
+        // ===================================================================================
+        // 3. CHAVE API DIVIDIDA E OFUSCADA
+        // ===================================================================================
+        const parteChave1 = "AIzaSyAl5IjyT2lXyEyUTWyLM";
+        const parteChave2 = "7MgF90I_TQVMfM";
+        const chaveCompletaObfuscada = parteChave1 + parteChave2;
+
+        const apiKeys = [ chaveCompletaObfuscada ];
+        const apiCarousel = new ApiCarousel(apiKeys, document.getElementById('api-monitor'));
+
+        // ===================================================================================
+        // 4. ESTADO GLOBAIS E SELETORES
+        // ===================================================================================
+        const wineList = document.getElementById('wine-list');
+        const emptyMessage = document.getElementById('empty-message');
+        const searchInput = document.getElementById('search-input');
+        const totalWineCountDisplay = document.getElementById('total-wine-count');
+        const uniqueLabelsCountDisplay = document.getElementById('unique-labels-count'); 
+        
+        let currentWines = [];
+        let searchTerm = '';
+
+        // ===================================================================================
+        // 5. BANCO DE DADOS (LISTENER FIREBASE)
+        // ===================================================================================
+        onSnapshot(adegaDocRef, (doc) => {
+            if (doc.exists() && doc.data().estoque) {
+                currentWines = doc.data().estoque.map(w => ({...w, id: w.id || Date.now() + Math.random()}));
+            } else {
+                currentWines = [];
+            }
+            renderWineList();
+        }, (error) => {
+            console.error("Erro DB:", error);
+            showErrorModal("Erro ao ler dados da adega.");
         });
 
-        // ==========================================
-        // FUNÇÕES DE INTERFACE (Renderizar, Adicionar, Excluir)
-        // ==========================================
-
-        function renderList() {
-            const ul = document.getElementById('listaConfirmados');
-            ul.innerHTML = ''; 
-
-            if (currentList.length === 0) {
-                ul.innerHTML = '<li class="text-center text-orange-400 font-medium py-6">A lista está vazia.</li>';
-                return;
+        async function saveWinesToFirebase(wines) {
+            try {
+                await setDoc(adegaDocRef, { estoque: wines });
+            } catch (error) {
+                showErrorModal("Erro ao salvar inventário.");
             }
+        }
 
-            currentList.forEach((entry) => {
-                const li = document.createElement('li');
-                li.className = "flex items-start justify-between gap-2 bg-white p-3 rounded-xl border border-orange-100 shadow-sm group transition-all hover:border-orange-300";
+        // ===================================================================================
+        // 6. FUNÇÃO IA CORE (100% VERDADE)
+        // ===================================================================================
+        async function callGenerativeAI(prompt, base64ImageData = null, isJson = false) {
+            const parts = [{ text: prompt }];
+            if (base64ImageData) {
+                parts.push({ inlineData: { mimeType: "image/jpeg", data: base64ImageData } });
+            }
+            
+            // SYSTEM INSTRUCTION: VERDADE ABSOLUTA
+            const payload = { 
+                systemInstruction: {
+                    parts: [{ text: "Você é um Master Sommelier. SUA REGRA DE OURO É A VERDADE ABSOLUTA. Trabalhe somente com 100% de verdade científica. Não invente safras, uvas, regiões ou harmonizações. Baseie-se apenas em fatos. Se não souber, diga. Seja polido, conciso e preciso." }]
+                },
+                contents: [{ role: "user", parts }],
+                safetySettings: [
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                ]
+            };
 
-                const leftDiv = document.createElement('div');
-                leftDiv.className = "flex items-start gap-2 pr-2";
-                leftDiv.innerHTML = `<svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
+
+            const result = await apiCarousel.makeRequest(payload);
+            
+            if (result.candidates && result.candidates[0].content.parts.length > 0) {
+                let textResponse = result.candidates[0].content.parts[0].text;
                 
-                const textDiv = document.createElement('div');
-                
-                const spanNome = document.createElement('span');
-                spanNome.className = "font-bold text-gray-800";
-                spanNome.textContent = entry.nome; 
-                
-                const spanItem = document.createElement('span');
-                spanItem.className = "text-gray-600 block sm:inline sm:ml-1";
-                spanItem.textContent = `- ${entry.item}`;
+                if (isJson) {
+                    let cleaned = textResponse.trim();
+                    if (cleaned.startsWith('```json')) cleaned = cleaned.substring(7);
+                    else if (cleaned.startsWith('```JSON')) cleaned = cleaned.substring(7);
+                    else if (cleaned.startsWith('```')) cleaned = cleaned.substring(3);
+                    if (cleaned.endsWith('```')) cleaned = cleaned.substring(0, cleaned.length - 3);
+                    return cleaned.trim();
+                }
+                return textResponse;
+            }
+            throw new Error("A IA retornou vazio.");
+        }
 
-                textDiv.appendChild(spanNome);
-                textDiv.appendChild(spanItem);
-                leftDiv.appendChild(textDiv);
+        // ===================================================================================
+        // 7. RENDERIZAÇÃO DA GRADE (MOBILE-FIRST: 2 COLUNAS) + LOCALIZAÇÃO FÍSICA
+        // ===================================================================================
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderWineList();
+        });
 
-                const btnDelete = document.createElement('button');
-                btnDelete.className = "text-red-300 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex-shrink-0 cursor-pointer";
-                btnDelete.title = "Eliminar da Nuvem";
+        function renderWineList() {
+            wineList.innerHTML = '';
+            
+            const filteredWines = currentWines.filter(wine => {
+                const searchStr = `${wine.wineName || ''} ${wine.grape || ''} ${wine.region || ''} ${wine.year || ''} ${wine.location || ''}`.toLowerCase();
+                return searchStr.includes(searchTerm);
+            });
+
+            emptyMessage.classList.toggle('hidden', filteredWines.length > 0);
+
+            const totalQuantity = currentWines.reduce((sum, wine) => sum + (wine.quantity || 0), 0);
+            totalWineCountDisplay.textContent = totalQuantity;
+            uniqueLabelsCountDisplay.textContent = currentWines.length; 
+
+            filteredWines.sort((a, b) => (a.wineName || '').localeCompare(b.wineName || '')).forEach(wine => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-3.5 rounded-2xl flex flex-col h-full cursor-pointer relative overflow-hidden group';
                 
-                // Associa o ID para eliminação
-                btnDelete.onclick = () => window.deleteItem(entry.id);
-                btnDelete.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
-
-                li.appendChild(leftDiv);
-                li.appendChild(btnDelete);
-                ul.appendChild(li);
+                const statusColor = wine.quantity > 2 ? 'bg-green-500' : (wine.quantity === 1 ? 'bg-red-600' : 'bg-amber-500');
+                
+                card.innerHTML = `
+                    <div class="absolute top-0 left-0 w-full h-1 ${statusColor} opacity-70"></div>
+                    
+                    <div class="flex justify-between items-start mb-2 gap-1 relative z-10">
+                        <h3 class="font-serif font-bold text-sm sm:text-base text-white leading-tight line-clamp-2">${wine.wineName || 'Desconhecido'}</h3>
+                    </div>
+                    
+                    <div class="mb-3 relative z-10 space-y-1">
+                        <p class="text-[10px] sm:text-xs text-stone-300 font-medium flex items-center gap-1.5"><span class="text-purple-400 text-xs">🍇</span> <span class="truncate">${wine.grape || 'Sem uva'}</span></p>
+                        <p class="text-[9px] sm:text-[10px] text-stone-500 flex items-center gap-1.5 uppercase tracking-wider font-semibold"><span class="text-blue-500/70 text-xs">📍</span> <span class="truncate">${wine.region || 'S/ Origem'}</span></p>
+                        ${wine.year ? `<p class="text-[10px] text-red-400 font-bold flex items-center gap-1.5 mt-0.5"><span class="text-stone-500 text-xs">🗓️</span> ${wine.year}</p>` : ''}
+                        ${wine.location ? `<p class="text-[9px] sm:text-[10px] text-emerald-400 flex items-center gap-1.5 mt-0.5 font-medium"><span class="text-emerald-500/70 text-xs">📦</span> <span class="truncate">${wine.location}</span></p>` : ''}
+                    </div>
+                    
+                    <div class="mt-auto pt-2 border-t border-stone-800/50 flex items-center justify-between relative z-10">
+                        <div class="flex items-center gap-1.5 bg-stone-950/60 px-2 py-1 rounded-lg border border-stone-800">
+                            <span class="text-[9px] text-stone-500 uppercase">Qtd</span>
+                            <span class="font-bold text-sm sm:text-base ${wine.quantity === 0 ? 'text-stone-600' : 'text-white'}">${wine.quantity}</span>
+                        </div>
+                        <div class="w-6 h-6 rounded-full bg-stone-800 flex items-center justify-center text-stone-400 border border-stone-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                    </div>
+                `;
+                card.onclick = () => showStockWineDetails(wine);
+                wineList.appendChild(card);
             });
         }
 
-        // Função de Eliminar (Realtime Database)
-        window.deleteItem = async function(nodeId) {
-            try {
-                // Referencia especificamente o nó do item para remoção
-                const itemRef = ref(db, `${dbPath}/${nodeId}`);
-                await remove(itemRef);
-            } catch (error) {
-                console.error("Erro ao eliminar:", error);
-                showError("Erro ao tentar eliminar da base de dados. Verifique as Regras de acesso.");
-            }
-        };
+        // ===================================================================================
+        // 8. CRUD LOGIC
+        // ===================================================================================
+        function createWineFingerprint(wineInfo) {
+            return `${(wineInfo.wineName || '').trim().toLowerCase()}-${(wineInfo.grape || '').trim().toLowerCase()}-${wineInfo.year || 0}`;
+        }
 
-        // Função de Adicionar (Realtime Database)
-        window.addToList = async function() {
-            const userNameInput = document.getElementById('userName');
-            const itemInput = document.getElementById('item');
-            const btn = document.getElementById('btnAdd');
+        function addWineFromScan(wineInfo) {
+            const wines = [...currentWines];
+            const newFingerprint = createWineFingerprint(wineInfo);
+            const existingIndex = wines.findIndex(w => createWineFingerprint(w) === newFingerprint);
+
+            if (existingIndex > -1) {
+                wines[existingIndex].quantity++;
+                // Se a pessoa digitou uma localização no novo scan, atualiza a existente
+                if (wineInfo.location) wines[existingIndex].location = wineInfo.location;
+            } else {
+                wines.push({ ...wineInfo, quantity: 1, id: Date.now() + Math.random() });
+            }
             
-            const userName = userNameInput.value.trim();
-            const item = itemInput.value.trim();
+            saveWinesToFirebase(wines);
+            closeModal();
+        }
 
-            if (!userName || !item) {
-                showError("⚠️ Preencha o seu Nome e o que vai levar para gravar na lista.");
-                return;
+        function updateWineQuantity(wineId, delta) {
+            let wines = [...currentWines];
+            const index = wines.findIndex(w => w.id === wineId);
+            if (index > -1) {
+                wines[index].quantity += delta;
+                if (wines[index].quantity < 0) wines[index].quantity = 0;
+                saveWinesToFirebase(wines);
+                if(delta !== 0) showStockWineDetails(wines[index]);
             }
+        }
 
-            const btnOriginalHtml = btn.innerHTML;
-            btn.innerHTML = `<div class="loader mr-2 border-white border-t-orange-600 w-5 h-5"></div> A Guardar...`;
-            btn.disabled = true;
-
-            try {
-                // Insere um novo registo gerando um ID único
-                await push(listaRef, {
-                    nome: userName,
-                    item: item,
-                    timestamp: Date.now()
-                });
-                
-                userNameInput.value = '';
-                itemInput.value = '';
-                
-            } catch (error) {
-                console.error("Erro Técnico ao guardar:", error);
-                showError("Falha na ligação à nuvem. Verifique as Regras do Realtime Database.");
-            } finally {
-                btn.innerHTML = btnOriginalHtml;
-                btn.disabled = false;
+        function deleteWine(wineId) {
+            if(confirm("Remover este vinho da adega?")) {
+                let wines = currentWines.filter(w => w.id !== wineId);
+                saveWinesToFirebase(wines);
+                closeModal();
             }
-        };
+        }
 
-        // ==========================================
-        // LÓGICA DE PARTILHA NO WHATSAPP
-        // ==========================================
+        function saveEditedWine(wineId) {
+            const wines = [...currentWines];
+            const index = wines.findIndex(w => w.id === wineId);
+            if (index > -1) {
+                wines[index].wineName = document.getElementById('edit-name').value.trim();
+                wines[index].grape = document.getElementById('edit-grape').value.trim();
+                wines[index].region = document.getElementById('edit-region').value.trim();
+                wines[index].year = document.getElementById('edit-year').value.trim();
+                wines[index].location = document.getElementById('edit-location').value.trim();
+                saveWinesToFirebase(wines);
+                showStockWineDetails(wines[index]); 
+            }
+        }
+
+        // ===================================================================================
+        // 9. CONTROLE DE MODAIS (UI)
+        // ===================================================================================
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
+        const loadingModal = document.getElementById('loading-modal');
+        const loadingText = document.getElementById('loading-text');
+
+        function openModal() {
+            modalBackdrop.classList.remove('hidden', 'modal-scale-enter-from');
+            modalContainer.classList.remove('hidden');
+            modalContent.classList.remove('modal-scale-enter-from');
+            modalBackdrop.classList.add('modal-scale-enter-to');
+            modalContent.classList.add('modal-scale-enter-to');
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.remove('modal-scale-enter-to');
+            modalContent.classList.remove('modal-scale-enter-to');
+            modalBackdrop.classList.add('modal-scale-leave-to');
+            modalContent.classList.add('modal-scale-leave-to');
+            setTimeout(() => {
+                modalBackdrop.classList.add('hidden');
+                modalContainer.classList.add('hidden');
+                modalContent.innerHTML = '';
+            }, 250); 
+        }
+
+        function showLoadingModal(text) { loadingText.textContent = text; loadingModal.classList.remove('hidden'); }
+        function hideLoadingModal() { loadingModal.classList.add('hidden'); }
+
+        function showErrorModal(message) {
+            modalContent.innerHTML = `
+                <div class="p-6 text-center">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-900/30 text-red-500 mb-4 border border-red-500/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <h2 class="font-serif text-2xl text-white mb-3">Aviso</h2>
+                    <p class="text-stone-400 text-sm leading-relaxed mb-6">${message}</p>
+                    <button class="close-modal-btn w-full bg-stone-800 hover:bg-stone-700 text-white font-bold py-3 rounded-xl transition-colors text-sm">OK</button>
+                </div>
+            `;
+            openModal();
+            modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+        }
+
+        // ===================================================================================
+        // 10. TELAS DO MODAL COM HEADER FIXO E NOVA LOCALIZAÇÃO FÍSICA
+        // ===================================================================================
         
-        window.shareToWhatsApp = function() {
-            if (currentList.length === 0) {
-                showError("⚠️ A lista está vazia. Adicione algo antes de enviar para o grupo.");
-                return;
+        const getModalHeader = (title, icon = '', showBackBtn = false) => `
+            <div class="sticky top-0 bg-stone-950/95 backdrop-blur-md z-20 pb-3 mb-4 border-b border-stone-800 flex justify-between items-center px-6 pt-5 -mx-6 -mt-6 rounded-t-[2rem]">
+                <h2 class="font-serif text-xl sm:text-2xl text-white flex items-center gap-2">${icon} ${title}</h2>
+                <button class="${showBackBtn ? 'back-modal-btn' : 'close-modal-btn'} text-stone-400 hover:text-white bg-stone-900 border border-stone-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                    ${showBackBtn 
+                        ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>' 
+                        : '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'}
+                </button>
+            </div>
+        `;
+
+        function showImageSourceModal() {
+            modalContent.innerHTML = `
+                ${getModalHeader('Adicionar Vinho', '📸')}
+                <div class="p-2">
+                    <p class="text-stone-400 text-xs text-center mb-6">Fotografe o rótulo frontal para leitura da IA.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="open-camera-btn" class="bg-gradient-to-br from-red-900 to-red-800 border border-red-500/30 text-white font-bold py-6 px-2 rounded-2xl flex flex-col items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <span class="text-[11px] tracking-wide uppercase">Câmera</span>
+                        </button>
+                        <button id="open-gallery-btn" class="bg-stone-800 border border-stone-600/50 text-white font-bold py-6 px-2 rounded-2xl flex flex-col items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-stone-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            <span class="text-[11px] tracking-wide uppercase">Galeria</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            openModal();
+            modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+            modalContent.querySelector('#open-camera-btn').onclick = () => { document.getElementById('camera-input').click(); closeModal(); };
+            modalContent.querySelector('#open-gallery-btn').onclick = () => { document.getElementById('gallery-input').click(); closeModal(); };
+        }
+
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            showLoadingModal('Analisando rótulo com IA...');
+            try {
+                const base64Image = await toBase64(file);
+                const prompt = `Extraia dados visíveis no rótulo. Retorne JSON: "wineName", "grape" (só verdade), "region", "year" (numero ou null), "description" (max 150 carac, factual), "foodPairings" (array de 3 strings, clássicas). Null se invisível.`;
+                const jsonResponse = await callGenerativeAI(prompt, base64Image, true);
+                const wineInfo = JSON.parse(jsonResponse);
+                
+                if (wineInfo && wineInfo.wineName) showScannedWineModal(wineInfo);
+                else showErrorModal('Não foi possível ler os dados técnicos deste rótulo.');
+            } catch (error) {
+                showErrorModal(`Análise falhou. Detalhes: ${error.message}`);
+            } finally {
+                hideLoadingModal();
+                event.target.value = ''; 
             }
+        }
 
-            const cleanUrl = window.location.origin + window.location.pathname;
+        function showScannedWineModal(wineInfo) {
+            const fingerprint = createWineFingerprint(wineInfo);
+            const isInStock = !!currentWines.find(w => createWineFingerprint(w) === fingerprint);
 
-            let waText = "🏃‍♂️ *LeRunners - Café da Manhã 01/03* 🍵\n";
-            waText += "-----------------------------------\n";
-            currentList.forEach(entry => {
-                waText += `✅ *${entry.nome}* - ${entry.item}\n`;
-            });
-            waText += "-----------------------------------\n\n";
-            waText += "👇 *Clique no link abaixo para ver a lista em tempo real ou adicionar o seu nome:* 👇\n";
-            waText += cleanUrl;
+            modalContent.innerHTML = `
+                ${getModalHeader('Confirmação', '✔️')}
+                <div class="px-2">
+                    <div class="mb-4 pb-3 border-b border-stone-800">
+                        <h2 class="font-serif text-2xl text-white mb-2">${wineInfo.wineName || 'Sem Nome'} ${wineInfo.year ? `<span class="text-base text-stone-500">(${wineInfo.year})</span>` : ''}</h2>
+                        <p class="text-stone-400 text-xs font-semibold tracking-widest uppercase">${wineInfo.grape || 'S/ Uva'} &bull; ${wineInfo.region || 'S/ Região'}</p>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- NOVO: Campo de Localização no ato do cadastro -->
+                        <div class="bg-stone-900/80 p-3 rounded-xl border border-stone-700">
+                            <label class="block text-[10px] text-emerald-500 uppercase tracking-widest mb-1.5 font-bold flex items-center gap-1">📦 Localização Física (Opcional)</label>
+                            <input type="text" id="new-wine-location" class="w-full bg-stone-950/50 border border-stone-800 rounded-lg px-3 py-2.5 text-white text-xs focus:outline-none focus:border-emerald-700 transition-colors" placeholder="Ex: Caixa 39 no quarto...">
+                        </div>
+                        
+                        <div class="bg-stone-900/40 p-3 rounded-xl border border-stone-800">
+                            <h3 class="text-[10px] text-stone-500 uppercase tracking-widest mb-1">Análise Técnica</h3>
+                            <p class="text-stone-300 text-xs leading-relaxed">${wineInfo.description || 'Não identificada.'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <button class="add-wine-btn bg-red-800 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm uppercase tracking-wide">
+                            ${isInStock ? '+1 Adicionar ao Estoque Existente' : '💾 Salvar na Adega'}
+                        </button>
+                        <button class="close-modal-btn bg-transparent border border-stone-700 text-stone-400 py-3.5 rounded-xl text-sm uppercase font-bold">Descartar</button>
+                    </div>
+                </div>
+            `;
+            openModal();
+            modalContent.querySelectorAll('.close-modal-btn').forEach(b => b.onclick = closeModal);
+            modalContent.querySelector('.add-wine-btn').onclick = () => {
+                wineInfo.location = document.getElementById('new-wine-location').value.trim();
+                addWineFromScan(wineInfo);
+            };
+        }
 
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(waText)}`;
-            window.open(waUrl, '_blank');
-        };
+        function showStockWineDetails(wine) {
+            modalContent.innerHTML = `
+                ${getModalHeader('Detalhes', '🍷')}
+                <div class="px-2 pb-4">
+                    <div class="mb-6 border-b border-stone-800 pb-5">
+                        <h2 class="font-serif text-3xl text-white mb-2 leading-tight">${wine.wineName}</h2>
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="bg-red-900/30 text-red-400 text-xs px-2.5 py-0.5 rounded font-bold">${wine.year || 'S.A.'}</span>
+                            <span class="text-stone-400 text-[10px] uppercase tracking-widest">${wine.grape}</span>
+                        </div>
+                        <p class="text-stone-500 text-xs flex items-center gap-1.5 mt-1"><span>📍</span> ${wine.region}</p>
+                        ${wine.location ? `<p class="text-emerald-400 text-xs font-medium flex items-center gap-1.5 mt-1.5"><span>📦</span> ${wine.location}</p>` : ''}
+                    </div>
+
+                    <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 flex items-center justify-between mb-6">
+                        <span class="text-stone-400 text-xs uppercase tracking-widest font-medium">Garrafas</span>
+                        <div class="flex items-center gap-4">
+                            <button class="btn-minus w-10 h-10 rounded-full bg-stone-950 text-stone-400 border border-stone-700 text-xl flex items-center justify-center">-</button>
+                            <span class="text-3xl font-serif text-white font-bold w-8 text-center">${wine.quantity}</span>
+                            <button class="btn-plus w-10 h-10 rounded-full bg-stone-950 text-stone-400 border border-stone-700 text-xl flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button class="tech-sheet-btn bg-stone-800 border border-stone-700 text-stone-200 py-3 rounded-xl text-[10px] uppercase tracking-widest font-bold flex items-center justify-center gap-1.5">
+                            📜 Ficha Técnica
+                        </button>
+                        <button class="edit-wine-btn bg-stone-800 border border-stone-700 text-stone-200 py-3 rounded-xl text-[10px] uppercase tracking-widest font-bold flex items-center justify-center gap-1.5">
+                            ✏️ Editar Info
+                        </button>
+                        <button class="delete-wine-btn col-span-2 mt-2 bg-transparent border border-red-900/50 text-red-500 py-3 rounded-xl text-[10px] uppercase tracking-widest font-bold">
+                            🗑️ Remover da Adega
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            openModal();
+            modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+            modalContent.querySelector('.delete-wine-btn').onclick = () => deleteWine(wine.id);
+            modalContent.querySelector('.edit-wine-btn').onclick = () => showEditWineModal(wine);
+            modalContent.querySelector('.btn-minus').onclick = () => updateWineQuantity(wine.id, -1);
+            modalContent.querySelector('.btn-plus').onclick = () => updateWineQuantity(wine.id, 1);
+            modalContent.querySelector('.tech-sheet-btn').onclick = () => generateTechSheet(wine);
+        }
+
+        function showEditWineModal(wine) {
+            modalContent.innerHTML = `
+                ${getModalHeader('Editar', '✏️', true)}
+                <div class="px-2 pb-4 space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div>
+                        <label class="block text-[9px] font-bold text-stone-500 uppercase tracking-widest mb-1 pl-1">Rótulo</label>
+                        <input type="text" id="edit-name" value="${wine.wineName || ''}" class="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-white text-sm focus:border-red-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-stone-500 uppercase tracking-widest mb-1 pl-1">Uvas</label>
+                        <input type="text" id="edit-grape" value="${wine.grape || ''}" class="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-white text-sm focus:border-red-600 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-stone-500 uppercase tracking-widest mb-1 pl-1">Região</label>
+                            <input type="text" id="edit-region" value="${wine.region || ''}" class="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-white text-sm focus:border-red-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-stone-500 uppercase tracking-widest mb-1 pl-1">Ano</label>
+                            <input type="number" id="edit-year" value="${wine.year || ''}" class="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-white text-sm focus:border-red-600 outline-none">
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <label class="block text-[9px] font-bold text-emerald-600 uppercase tracking-widest mb-1 pl-1">📦 Localização Física / Guarda</label>
+                        <input type="text" id="edit-location" value="${wine.location || ''}" placeholder="Ex: Caixa 22 no armário..." class="w-full bg-stone-900 border border-emerald-900/50 rounded-xl p-3 text-white text-sm focus:border-emerald-500 outline-none">
+                    </div>
+                    <button class="save-edit-btn w-full mt-6 bg-green-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg">Salvar Alterações</button>
+                </div>
+            `;
+            modalContent.querySelector('.back-modal-btn').onclick = () => showStockWineDetails(wine);
+            modalContent.querySelector('.save-edit-btn').onclick = () => saveEditedWine(wine.id);
+        }
+
+        async function generateTechSheet(wine) {
+            showLoadingModal('Analisando ficha...');
+            try {
+                const prompt = `Ficha Técnica 100% VERDADEIRA para: ${wine.wineName}, Ano: ${wine.year}, Região: ${wine.region}, Uva: ${wine.grape}. Se não houver info oficial do rótulo, dê infos da uva/região genérica verídica. HTML: <h3>, <p>, <ul>. Sem invenções.`;
+                const htmlText = await callGenerativeAI(prompt);
+                
+                modalContent.innerHTML = `
+                    ${getModalHeader('Ficha Técnica', '📜', true)}
+                    <div class="px-3 pb-6 text-stone-300 space-y-4 max-h-[65vh] overflow-y-auto custom-scrollbar [&>h3]:text-white [&>h3]:font-serif [&>h3]:text-lg [&>h3]:mt-4 [&>h3]:border-b [&>h3]:border-stone-800 [&>h3]:pb-1 [&>ul]:list-disc [&>ul]:pl-4 [&>p]:text-xs [&>p]:leading-relaxed [&>li]:text-xs">
+                        ${htmlText}
+                    </div>`;
+                modalContent.querySelector('.back-modal-btn').onclick = () => showStockWineDetails(wine);
+            } catch (error) {
+                showErrorModal(`Erro: ${error.message}`);
+            } finally { hideLoadingModal(); }
+        }
+
+        function openChatModal() {
+            const chatHistory = [{ role: 'ai', text: 'Sommelier online. Fatos e verdades enológicas. Como harmonizamos hoje?' }];
+            modalContent.innerHTML = `
+                ${getModalHeader('Sommelier', '🤵')}
+                <div class="px-2 pb-2 flex flex-col h-[65vh]">
+                    <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar pb-4">
+                        ${chatHistory.map(msg => `
+                            <div class="max-w-[90%] p-3 rounded-2xl text-xs leading-relaxed ${msg.role === 'user' ? 'bg-red-900/60 text-white rounded-br-sm self-end' : 'bg-stone-900 text-stone-300 border border-stone-800 rounded-bl-sm self-start'}">
+                                ${msg.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <form id="chat-form" class="relative flex items-center mt-2 border-t border-stone-800 pt-3">
+                        <input type="text" id="chat-input" class="w-full bg-stone-900 border border-stone-700 rounded-xl pl-4 pr-12 py-3 text-white text-sm focus:outline-none focus:border-red-700" placeholder="Pergunte..." autocomplete="off">
+                        <button type="submit" class="absolute right-2 w-9 h-9 bg-red-800 text-white rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+                        </button>
+                    </form>
+                </div>`;
+            openModal();
+            modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+
+            const chatForm = document.getElementById('chat-form');
+            chatForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const chatInput = document.getElementById('chat-input');
+                const userMsg = chatInput.value.trim();
+                if (!userMsg) return;
+                
+                addChatBubble(userMsg, 'user');
+                chatInput.value = '';
+                const loaderId = addChatBubble('<div class="flex gap-1 items-center h-4"><div class="w-1.5 h-1.5 bg-stone-500 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-stone-500 rounded-full animate-bounce" style="animation-delay: 0.15s"></div></div>', 'ai', true);
+
+                try {
+                    const stock = currentWines.filter(w=>w.quantity>0).map(w => `- ${w.wineName} (${w.grape})`).join('\n');
+                    const prompt = `Usuário: "${userMsg}". Adega:\n${stock || 'Vazia'}\n100% VERDADE TÉCNICA ENOLÓGICA. Harmonize com exatidão clássica priorizando o estoque. Seja direto. Sem markdown.`;
+                    const aiResponse = await callGenerativeAI(prompt);
+                    document.getElementById(loaderId).innerHTML = aiResponse.replace(/\n/g, '<br>');
+                } catch (error) {
+                    document.getElementById(loaderId).innerHTML = `Erro: ${error.message}`;
+                }
+            };
+        }
+
+        function addChatBubble(text, role, isHtml = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const el = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            el.id = id;
+            el.className = `max-w-[90%] p-3 rounded-2xl text-xs leading-relaxed mt-4 ${role === 'user' ? 'bg-red-900/60 text-white rounded-br-sm self-end' : 'bg-stone-900 text-stone-300 border border-stone-800 rounded-bl-sm self-start'}`;
+            if(isHtml) el.innerHTML = text; else el.textContent = text;
+            chatMessages.appendChild(el);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return id;
+        }
+
+        async function suggestWineForTonight() {
+            if (currentWines.length === 0) return showErrorModal("Cadastre vinhos primeiro.");
+            showLoadingModal('Buscando a verdade na adega...');
+            try {
+                const stock = currentWines.filter(w=>w.quantity>0).map(w => `- ${w.wineName} ${w.location ? '(Local: '+w.location+')' : ''}`).join('\n');
+                const prompt = `Sommelier Factual. Adega:\n${stock}\nEscolha 1 vinho para hoje com base técnica verdadeira. Cite onde ele está guardado se houver local. HTML limpo (<h3>, <p>).`;
+                const resp = await callGenerativeAI(prompt);
+                
+                modalContent.innerHTML = `
+                    ${getModalHeader('Sugestão Factual', '✨')}
+                    <div class="px-4 pb-6 text-stone-300 space-y-3 max-h-[60vh] overflow-y-auto custom-scrollbar [&>h3]:text-white [&>h3]:font-serif [&>h3]:text-lg [&>p]:text-sm">
+                        ${resp}
+                    </div>`;
+                openModal();
+                modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+            } catch (error) { showErrorModal(error.message); } finally { hideLoadingModal(); }
+        }
+
+        function openDinnerPlannerModal() {
+            if (currentWines.length === 0) return showErrorModal("Sem vinhos para harmonizar.");
+            modalContent.innerHTML = `
+                ${getModalHeader('Harmonizar Jantar', '🍽️')}
+                <div class="px-4 pb-6">
+                    <p class="text-stone-400 text-xs mb-6">Informe a temática do prato para uma harmonização verdadeira.</p>
+                    <form id="dinner-form" class="flex flex-col gap-4">
+                        <input type="text" id="dinner-theme" class="bg-stone-900 border border-stone-700 rounded-xl p-4 text-white text-sm outline-none focus:border-blue-500" placeholder="Ex: Frutos do Mar..." required>
+                        <button type="submit" class="bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest text-xs">Elaborar Menu</button>
+                    </form>
+                </div>`;
+            openModal();
+            modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+            document.getElementById('dinner-form').onsubmit = (e) => { e.preventDefault(); generateDinnerMenu(document.getElementById('dinner-theme').value); };
+        }
+
+        async function generateDinnerMenu(theme) {
+            showLoadingModal('Aplicando regras da enologia...');
+            try {
+                const stock = currentWines.filter(w=>w.quantity>0).map(w => `- ${w.wineName} (${w.grape}, ${w.region})`).join('\n');
+                const prompt = `Tema: "${theme}". Estoque:\n${stock}\nCrie cardápio (Entrada, Principal, Sobremesa). Harmonize EXCLUSIVAMENTE com a adega e diga A VERDADE TÉCNICA. HTML (<h3>, <p>, <ul>, <li>).`;
+                const resp = await callGenerativeAI(prompt);
+                
+                modalContent.innerHTML = `
+                    ${getModalHeader('Menu Harmonizado', '🍽️')}
+                    <div class="px-4 pb-4 text-stone-300 space-y-3 max-h-[55vh] overflow-y-auto custom-scrollbar [&>h3]:text-white [&>h3]:font-serif [&>h3]:text-base [&>h3]:mt-4 [&>ul]:list-disc [&>ul]:pl-5 [&>li]:text-xs [&>p]:text-xs">
+                        <h3 class="text-blue-400 border-b border-stone-800 pb-2 mb-4">${theme}</h3>
+                        ${resp}
+                    </div>`;
+                openModal();
+                modalContent.querySelector('.close-modal-btn').onclick = closeModal;
+            } catch (error) { showErrorModal(error.message); } finally { hideLoadingModal(); }
+        }
+
+        // ===================================================================================
+        // 12. INICIALIZAÇÃO DE LISTENERS
+        // ===================================================================================
+        document.getElementById('api-monitor').addEventListener('click', function() { this.classList.toggle('is-expanded'); });
+        document.getElementById('add-wine-action-btn').addEventListener('click', showImageSourceModal);
+        document.getElementById('camera-input').addEventListener('change', handleImageUpload);
+        document.getElementById('gallery-input').addEventListener('change', handleImageUpload);
+        document.getElementById('ask-sommelier-btn').addEventListener('click', openChatModal);
+        document.getElementById('btn-surprise-me').addEventListener('click', suggestWineForTonight);
+        document.getElementById('btn-dinner-planner').addEventListener('click', openDinnerPlannerModal);
 
     </script>
 </body>
